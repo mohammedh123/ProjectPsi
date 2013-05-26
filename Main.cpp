@@ -12,15 +12,6 @@
 //
 // Copyright (c) Microsoft Corporation. All rights reserved.
 //--------------------------------------------------------------------------------------
-
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <windows.h>
-
-#include <d3d11.h>
-
-#include <directxmath.h>
-
 #include "GraphicsManager.h"
 
 using namespace DirectX;
@@ -30,6 +21,7 @@ HRESULT InitDevice();
 void CleanupDevice();
 LRESULT CALLBACK    WndProc( HWND, UINT, WPARAM, LPARAM );
 void Render();
+void Update();
 
 std::unique_ptr<GraphicsManager> GraphicsMan;
 

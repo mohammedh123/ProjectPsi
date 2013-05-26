@@ -12,9 +12,9 @@ GraphicsManager::GraphicsManager() : m_hInst(nullptr), m_hWnd(nullptr),
     m_DriverType(D3D_DRIVER_TYPE_NULL), m_FeatureLevel(D3D_FEATURE_LEVEL_11_0)
 {}
 
-bool GraphicsManager::Initialize( HINSTANCE hInstance, int nCmdShow )
+bool GraphicsManager::Initialize( HINSTANCE hInstance, int nCmdShow, WNDPROC loopFunc, const char* windowTitle )
 {
-    if(FAILED(InitWindow(hInstance, nCmdShow)))
+    if(FAILED(InitWindow(hInstance, nCmdShow, loopFunc, windowTitle)))
         return false;
 
     if(FAILED(InitDevice()))
