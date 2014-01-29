@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using ProjectPsi.Core;
 using SFML.Graphics;
 using SFML.Window;
-using Color = SFML.Graphics.Color;
 
 namespace ProjectPsi.GUI
 {
