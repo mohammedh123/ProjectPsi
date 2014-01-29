@@ -1,69 +1,143 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
+using ProjectPsi.Core;
+using SFML.Graphics;
+using SFML.Window;
+using Color = SFML.Graphics.Color;
 
 namespace ProjectPsi.GUI
 {
     public class MainGame : IDisposable
     {
-        public void Run(int framesPerSecond)
-        {
-            using (var game = new GameWindow()) {
-                game.Load += (o, args) => OnLoad(game);
-                game.Resize += (sender, e) => OnResize(game);
-                game.UpdateFrame += (sender, e) => OnUpdateFrame(game);
-                game.RenderFrame += (sender, e) => OnRenderFrame(game);
+        private Map _map;
+        private TextureManager _textureManager;
+        private List<Sprite> _tileSprites;
+        private View _mapView;
 
-                // Run the game at 60 updates per second
-                game.Run(60.0);
+        public bool IsActive { get; set; }
+
+        public RenderWindow Window { get; set; }
+
+        public void Run(int updatesPerSecond)
+        {
+            IsActive = true;
+
+            _textureManager = new TextureManager();
+            _textureManager.LoadTexture("tilemap", @"Resources/Textures/tilemap.png");
+
+            var tileSprite = new Sprite(_textureManager.GetTexture("tilemap"), new IntRect(0,0,64,64));
+            tileSprite.Origin = new Vector2f(32, 32);
+
+            _tileSprites = new List<Sprite>();
+            _tileSprites.Add(tileSprite);
+
+            _map = new Map(18, 15, 31);
+
+            for (int r = 0; r < _map.Height; r++) {
+                for (int c = 0; c < _map.Width; c++) {
+                    if (r == 0 || c == 0 || r == _map.Height - 1 || c == _map.Width - 1) {
+                        _map.SetTile(c, r, 0);
+                    }
+                }
+            }
+            
+            Window = new RenderWindow(new VideoMode(800,600), "ProjectPsi", Styles.Default);
+            Window.SetFramerateLimit(60);
+
+            Window.Closed += OnClosed;
+            Window.KeyPressed += OnKeyPressed;
+            Window.MouseButtonPressed += OnMouseButtonPressed;
+            Window.LostFocus += OnLostFocus;
+            Window.GainedFocus += OnGainedFocus;
+                
+            Window.SetActive(IsActive);
+
+            _mapView = Window.GetView();
+
+            var clock = new Stopwatch();
+            clock.Start();
+            // run the program as long as the window is open
+            while (Window.IsOpen()) {
+                var dt = clock.Elapsed.TotalSeconds;
+
+                Window.DispatchEvents();
+
+                Update();
+
+                RenderFrame(Window);
             }
         }
 
-        private void OnLoad(GameWindow game)
+        private void OnGainedFocus(object sender, EventArgs eventArgs)
         {
-            // setup settings, load textures, sounds
-            game.VSync = VSyncMode.On;
+            IsActive = true;
         }
 
-        private void OnResize(GameWindow game)
+        private void OnLostFocus(object sender, EventArgs eventArgs)
         {
-            GL.Viewport(0, 0, game.Width, game.Height);
-        }
-
-        private void OnUpdateFrame(GameWindow game)
-        {
-            // add game logic, input handling
-            if (game.Keyboard[Key.Escape])
-            {
-                game.Exit();
-            }
-        }
-
-        private void OnRenderFrame(GameWindow game)
-        {
-            // render graphics
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadIdentity();
-            GL.Ortho(-1.0, 1.0, -1.0, 1.0, 0.0, 4.0);
-
-            GL.Begin(PrimitiveType.Triangles);
-
-            GL.Color3(Color.MidnightBlue);
-            GL.Vertex2(-1.0f, 1.0f);
-            GL.Color3(Color.SpringGreen);
-            GL.Vertex2(0.0f, -1.0f);
-            GL.Color3(Color.Ivory);
-            GL.Vertex2(1.0f, 1.0f);
-
-            GL.End();
-
-            game.SwapBuffers();
+            IsActive = false;
         }
         
+        private void OnMouseButtonPressed(object sender, MouseButtonEventArgs e)
+        {
+        }
+
+        private void OnClosed(object sender, EventArgs e)
+        {
+            Window.Close();
+        }
+
+        private void OnKeyPressed(object sender, KeyEventArgs e)
+        {
+            if (e.Code == Keyboard.Key.Escape)
+                Window.Close();
+        }
+
+        private void Update()
+        {
+            if (Mouse.IsButtonPressed(Mouse.Button.Left)) {
+            }
+        }
+
+        private void RenderFrame(RenderWindow window)
+        {
+            window.Clear();
+
+            DrawMap(window);
+
+            window.Display();
+        }
+
+        public void DrawMap(RenderWindow window)
+        {
+            var tileWidth = _map.TileRadius*2;
+            var tileHeight = (float) (tileWidth*Math.Sin(Math.PI/3));
+
+            for (var row = 0; row < _map.Height; row++) {
+                for (var col = 0; col < _map.Width; col++) {
+                    //even-q vertical layout
+
+                    var spriteIdx = _map.Tiles[row, col];
+                    if (spriteIdx < 0)
+                    {
+                        continue;
+                    }
+
+                    var xPos = col * tileWidth * 0.75f;
+                    var yPos = row * tileHeight;
+
+                    if (col%2 != 0) {
+                        yPos -= tileHeight*0.5f;
+                    }
+
+                    _tileSprites[spriteIdx].Position = new Vector2f(xPos, yPos);
+                    window.Draw(_tileSprites[spriteIdx]);
+                }
+            }
+        }
+
         public void Dispose()
         {
         }
