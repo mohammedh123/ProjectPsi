@@ -59,6 +59,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameScreen.cs" />
+    <Compile Include="IInputManager.cs" />
+    <Compile Include="IMouseManager.cs" />
     <Compile Include="MainGame.cs" />
     <Compile Include="Noise.cs" />
     <Compile Include="Program.cs" />
