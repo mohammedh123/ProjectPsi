@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ProjectPsi.GUI.Interfaces;
+﻿using ProjectPsi.GUI.Interfaces;
 using SFML.Window;
 
-namespace ProjectPsi.GUI
+namespace ProjectPsi.GUI.Managers
 {
     /// <summary>
     /// An implementation of the InputManager specifically for SFML.NET.

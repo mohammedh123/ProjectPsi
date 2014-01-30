@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using ProjectPsi.GUI.Interfaces;
+using ProjectPsi.GUI.Screens;
 using SFML.Graphics;
 using SFML.Window;
 
-namespace ProjectPsi.GUI
+namespace ProjectPsi.GUI.Managers
 {
     /// <summary>
     /// An implementation of IScreenManager specifically for use with SFML.NET.

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using ProjectPsi.Core;
 using ProjectPsi.GUI.Interfaces;
+using ProjectPsi.GUI.Managers;
 using SFML.Graphics;
 using SFML.Window;
 

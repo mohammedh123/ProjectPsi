@@ -2,7 +2,7 @@
 using SFML;
 using SFML.Graphics;
 
-namespace ProjectPsi.GUI
+namespace ProjectPsi.GUI.Managers
 {
     class TextureManager
     {
