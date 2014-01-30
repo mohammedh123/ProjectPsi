@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using ProjectPsi.Core;
+using ProjectPsi.GUI.Interfaces;
 using SFML.Graphics;
 using SFML.Window;
 
@@ -11,10 +12,16 @@ namespace ProjectPsi.GUI
     {
         private Map _map;
         private TextureManager _textureManager;
+        private ScreenManager _screenManager;
+        private IMouseManager<Mouse.Button, Vector2i, Window> _mouseManager; 
+        private IKeyStateManager<Keyboard.Key> _kbManager;
+        private IInputManager<Mouse.Button, Vector2i, Window, Keyboard.Key> _inputManager;
         private List<Sprite> _tileSprites;
         private View _mapView;
 
         public bool IsActive { get; set; }
+
+        public TimeSpan LastFrameTime { get; set; }
 
         public RenderWindow Window { get; set; }
 
@@ -44,13 +51,22 @@ namespace ProjectPsi.GUI
             Window = new RenderWindow(new VideoMode(800,600), "ProjectPsi", Styles.Default);
             Window.SetFramerateLimit(60);
 
+            Window.GainedFocus += OnGainedFocus;
+            Window.LostFocus += OnLostFocus;
             Window.Closed += OnClosed;
             Window.KeyPressed += OnKeyPressed;
             Window.MouseButtonPressed += OnMouseButtonPressed;
-            Window.LostFocus += OnLostFocus;
-            Window.GainedFocus += OnGainedFocus;
                 
             Window.SetActive(IsActive);
+
+            _mouseManager = new MouseManager();
+            _kbManager = new KeyboardManager();
+            _inputManager = new InputManager(_mouseManager, _kbManager, Window);
+
+            _screenManager = new ScreenManager(_inputManager, this);
+            _screenManager.Initialize();
+            // add screens
+            _screenManager.LoadContent();
 
             _mapView = Window.GetView();
 
@@ -58,7 +74,7 @@ namespace ProjectPsi.GUI
             clock.Start();
             // run the program as long as the window is open
             while (Window.IsOpen()) {
-                var dt = clock.Elapsed.TotalSeconds;
+                LastFrameTime = clock.Elapsed;
 
                 Window.DispatchEvents();
 
@@ -67,6 +83,8 @@ namespace ProjectPsi.GUI
                 RenderFrame(Window);
             }
         }
+
+        #region Event Handlers (simple) 
 
         private void OnGainedFocus(object sender, EventArgs eventArgs)
         {
@@ -78,10 +96,6 @@ namespace ProjectPsi.GUI
             IsActive = false;
         }
         
-        private void OnMouseButtonPressed(object sender, MouseButtonEventArgs e)
-        {
-        }
-
         private void OnClosed(object sender, EventArgs e)
         {
             Window.Close();
@@ -89,21 +103,31 @@ namespace ProjectPsi.GUI
 
         private void OnKeyPressed(object sender, KeyEventArgs e)
         {
-            if (e.Code == Keyboard.Key.Escape)
-                Window.Close();
+            _kbManager.UpdateKey(e.Code);
         }
+
+        private void OnMouseButtonPressed(object sender, MouseButtonEventArgs e)
+        {
+            _mouseManager.UpdateKey(e.Button);
+        }
+
+        #endregion
 
         private void Update()
         {
-            if (Mouse.IsButtonPressed(Mouse.Button.Left)) {
-            }
+            _inputManager.Update();
+
+            _screenManager.Update(LastFrameTime);
+
+            _inputManager.PostUpdate();
         }
 
         private void RenderFrame(RenderWindow window)
         {
-            window.Clear();
+            _screenManager.Draw(LastFrameTime);
+            //window.Clear();
 
-            DrawMap(window);
+            //DrawMap(window);
 
             window.Display();
         }
@@ -118,8 +142,7 @@ namespace ProjectPsi.GUI
                     //even-q vertical layout
 
                     var spriteIdx = _map.Tiles[row, col];
-                    if (spriteIdx < 0)
-                    {
+                    if (spriteIdx < 0) {
                         continue;
                     }
 

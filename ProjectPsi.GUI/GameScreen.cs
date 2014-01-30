@@ -1,5 +1,7 @@
 ﻿using System;
 using ProjectPsi.Core;
+using ProjectPsi.GUI.Interfaces;
+using SFML.Window;
 
 namespace ProjectPsi.GUI
 {
@@ -22,7 +24,7 @@ namespace ProjectPsi.GUI
     /// want to quit" message box, and the main game itself are all implemented
     /// as screens.
     /// </summary>
-    public abstract class GameScreen
+    abstract class GameScreen
     {
         #region Properties
 
@@ -209,7 +211,7 @@ namespace ProjectPsi.GUI
         /// is only called when the screen is active, and not when some other
         /// screen has taken the focus.
         /// </summary>
-        public virtual void HandleInput(IInputManager input) { }
+        public virtual void HandleInput(IInputManager<Mouse.Button, Vector2i, Window, Keyboard.Key> input) { }
 
 
         /// <summary>

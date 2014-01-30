@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using ProjectPsi.GUI.Interfaces;
 using SFML.Graphics;
 using SFML.Window;
 
 namespace ProjectPsi.GUI
 {
     /// <summary>
-    /// The screen manager is a component which manages one or more GameScreen
-    /// instances. It maintains a stack of screens, calls their Update and Draw
-    /// methods at the appropriate times, and automatically routes input to the
-    /// topmost active screen.
+    /// An implementation of IScreenManager specifically for use with SFML.NET.
     /// </summary>
-    public class ScreenManager
+    class ScreenManager : IScreenManager
     {
         #region Fields
 
@@ -25,7 +23,7 @@ namespace ProjectPsi.GUI
         bool _isInitialized;
         bool _traceEnabled;
 
-        private readonly IInputManager _input;
+        private readonly IInputManager<Mouse.Button, Vector2i, Window, Keyboard.Key> _input;
         private readonly MainGame _game;
 
         #endregion
@@ -42,7 +40,7 @@ namespace ProjectPsi.GUI
             get { return _traceEnabled; }
             set { _traceEnabled = value; }
         }
-
+        
 
         #endregion
 
@@ -52,10 +50,12 @@ namespace ProjectPsi.GUI
         /// <summary>
         /// Constructs a new screen manager component.
         /// </summary>
-        public ScreenManager(IInputManager input, MainGame game)
+        public ScreenManager(IInputManager<Mouse.Button, Vector2i, Window, Keyboard.Key> input, MainGame game)
         {
             _input = input;
             _game = game;
+
+            Initialize();
         }
 
 
@@ -64,22 +64,37 @@ namespace ProjectPsi.GUI
         /// </summary>
         public void Initialize()
         {
+            if (_isInitialized) {
+                return;
+            }
+
             _isInitialized = true;
 
-            _fullScreenQuad = new RectangleShape();
-            _fullScreenQuad.Size = new Vector2f(10000,10000);
+            _fullScreenQuad = new RectangleShape {Size = new Vector2f(10000, 10000)};
         }
 
 
         /// <summary>
         /// Load your graphics content.
         /// </summary>
-        protected void LoadContent()
+        public void LoadContent()
         {
             // Tell each of the screens to load their content.
             foreach (var screen in _screens)
             {
                 screen.LoadContent();
+            }
+        }
+
+        /// <summary>
+        /// Unload your graphics content.
+        /// </summary>
+        public void UnloadContent()
+        {
+            // Tell each of the screens to unload their content.
+            foreach (var screen in _screens)
+            {
+                screen.UnloadContent();
             }
         }
 
