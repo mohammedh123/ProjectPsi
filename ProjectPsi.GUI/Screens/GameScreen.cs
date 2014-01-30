@@ -1,9 +1,10 @@
 ﻿using System;
 using ProjectPsi.Core;
 using ProjectPsi.GUI.Interfaces;
+using ProjectPsi.GUI.Managers;
 using SFML.Window;
 
-namespace ProjectPsi.GUI
+namespace ProjectPsi.GUI.Screens
 {
     /// <summary>
     /// Enum describes the screen transition state.

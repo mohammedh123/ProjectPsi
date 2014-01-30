@@ -4,6 +4,7 @@ using System.Diagnostics;
 using ProjectPsi.Core;
 using ProjectPsi.GUI.Interfaces;
 using ProjectPsi.GUI.Managers;
+using ProjectPsi.GUI.Screens;
 using SFML.Graphics;
 using SFML.Window;
 
@@ -67,6 +68,7 @@ namespace ProjectPsi.GUI
             _screenManager = new ScreenManager(_inputManager, this);
             _screenManager.Initialize();
             // add screens
+            _screenManager.AddScreen(new TestScreen());
             _screenManager.LoadContent();
 
             _mapView = Window.GetView();
