@@ -122,6 +122,8 @@ namespace ProjectPsi.GUI.Managers
             var otherScreenHasFocus = !_game.IsActive;
             var coveredByOtherScreen = false;
 
+            bool prevOtherScreenHasFocus = otherScreenHasFocus, prevCoveredByOtherScreen = coveredByOtherScreen;
+
             // Loop as long as there are screens waiting to be updated.
             while (_screensToUpdate.Count > 0)
             {
@@ -130,8 +132,8 @@ namespace ProjectPsi.GUI.Managers
 
                 _screensToUpdate.RemoveAt(_screensToUpdate.Count - 1);
 
-                // Update the screen.
-                screen.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+                prevOtherScreenHasFocus = otherScreenHasFocus; 
+                prevCoveredByOtherScreen = coveredByOtherScreen;
 
                 if (screen.ScreenState == ScreenState.TransitionOn ||
                     screen.ScreenState == ScreenState.Active)
@@ -150,6 +152,9 @@ namespace ProjectPsi.GUI.Managers
                     if (!screen.IsPopup)
                         coveredByOtherScreen = true;
                 }
+
+                // Update the screen.
+                screen.Update(gameTime, prevOtherScreenHasFocus, prevCoveredByOtherScreen);
             }
 
             // Print debug trace?
@@ -241,7 +246,10 @@ namespace ProjectPsi.GUI.Managers
         /// </summary>
         public void FadeBackBufferToBlack(float alpha)
         {
+            var size = _game.Window.Size;
             _fullScreenQuad.FillColor = new Color(0,0,0,(byte)(alpha*255));
+            _fullScreenQuad.Position = new Vector2f(0,0);
+            _fullScreenQuad.Size = new Vector2f(size.X, size.Y);
 
             _game.Window.Draw(_fullScreenQuad);
         }
