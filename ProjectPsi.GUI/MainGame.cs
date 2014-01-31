@@ -10,45 +10,27 @@ using SFML.Window;
 
 namespace ProjectPsi.GUI
 {
-    public class MainGame : IDisposable
+    class MainGame : IDisposable
     {
-        private Map _map;
-        private ITextureManager<Texture> _textureManager;
-        private IScreenManager _screenManager;
-        private IMouseManager<Mouse.Button, Vector2i, Window> _mouseManager; 
-        private IKeyStateManager<Keyboard.Key> _kbManager;
-        private IInputManager<Mouse.Button, Vector2i, Window, Keyboard.Key> _inputManager;
-        private List<Sprite> _tileSprites;
-        private View _mapView;
+        public ITextureManager<Texture> TextureManager { get; private set; }
 
-        public bool IsActive { get; set; }
+        public IScreenManager ScreenManager { get; private set; }
 
-        public TimeSpan LastFrameTime { get; set; }
+        public IMouseManager<Mouse.Button, Vector2i, Window> MouseManager { get; private set; }
 
-        public RenderWindow Window { get; set; }
+        public IKeyStateManager<Keyboard.Key> KeyboardManager { get; private set; }
+
+        public IInputManager<Mouse.Button, Vector2i, Window, Keyboard.Key> InputManager { get; private set; }
+
+        public bool IsActive { get; private set; }
+
+        public TimeSpan LastFrameTime { get; private set; }
+
+        public RenderWindow Window { get; private set; }
 
         public void Run(int updatesPerSecond)
         {
             IsActive = true;
-
-            _textureManager = new TextureManager();
-            _textureManager.LoadTexture("tilemap", @"Resources/Textures/tilemap.png");
-
-            var tileSprite = new Sprite(_textureManager.GetTexture("tilemap"), new IntRect(0,0,64,64));
-            tileSprite.Origin = new Vector2f(32, 32);
-
-            _tileSprites = new List<Sprite>();
-            _tileSprites.Add(tileSprite);
-
-            _map = new Map(18, 15, 31);
-
-            for (int r = 0; r < _map.Height; r++) {
-                for (int c = 0; c < _map.Width; c++) {
-                    if (r == 0 || c == 0 || r == _map.Height - 1 || c == _map.Width - 1) {
-                        _map.SetTile(c, r, 0);
-                    }
-                }
-            }
             
             Window = new RenderWindow(new VideoMode(800,600), "ProjectPsi", Styles.Default);
             Window.SetFramerateLimit(60);
@@ -60,18 +42,18 @@ namespace ProjectPsi.GUI
             Window.MouseButtonPressed += OnMouseButtonPressed;
                 
             Window.SetActive(IsActive);
+            
+            TextureManager = new TextureManager();
 
-            _mouseManager = new MouseManager();
-            _kbManager = new KeyboardManager();
-            _inputManager = new InputManager(_mouseManager, _kbManager, Window);
+            MouseManager = new MouseManager();
+            KeyboardManager = new KeyboardManager();
+            InputManager = new InputManager(MouseManager, KeyboardManager, Window);
 
-            _screenManager = new ScreenManager(_inputManager, this);
-            _screenManager.Initialize();
+            ScreenManager = new ScreenManager(InputManager, this);
+            ScreenManager.Initialize();
             // add screens
-            _screenManager.AddScreen(new TestScreen());
-            _screenManager.LoadContent();
-
-            _mapView = Window.GetView();
+            ScreenManager.AddScreen(new TestScreen());
+            ScreenManager.LoadContent();
 
             var clock = new Stopwatch();
             clock.Start();
@@ -106,60 +88,30 @@ namespace ProjectPsi.GUI
 
         private void OnKeyPressed(object sender, KeyEventArgs e)
         {
-            _kbManager.UpdateKey(e.Code);
+            KeyboardManager.UpdateKey(e.Code);
         }
 
         private void OnMouseButtonPressed(object sender, MouseButtonEventArgs e)
         {
-            _mouseManager.UpdateKey(e.Button);
+            MouseManager.UpdateKey(e.Button);
         }
 
         #endregion
 
         private void Update()
         {
-            _inputManager.Update();
+            InputManager.Update();
 
-            _screenManager.Update(LastFrameTime);
+            ScreenManager.Update(LastFrameTime);
 
-            _inputManager.PostUpdate();
+            InputManager.PostUpdate();
         }
 
         private void RenderFrame(RenderWindow window)
         {
-            _screenManager.Draw(LastFrameTime);
-            //window.Clear();
-
-            //DrawMap(window);
+            ScreenManager.Draw(LastFrameTime);
 
             window.Display();
-        }
-
-        public void DrawMap(RenderWindow window)
-        {
-            var tileWidth = _map.TileRadius*2;
-            var tileHeight = (float) (tileWidth*Math.Sin(Math.PI/3));
-
-            for (var row = 0; row < _map.Height; row++) {
-                for (var col = 0; col < _map.Width; col++) {
-                    //even-q vertical layout
-
-                    var spriteIdx = _map.Tiles[row, col];
-                    if (spriteIdx < 0) {
-                        continue;
-                    }
-
-                    var xPos = col * tileWidth * 0.75f;
-                    var yPos = row * tileHeight;
-
-                    if (col%2 != 0) {
-                        yPos -= tileHeight*0.5f;
-                    }
-
-                    _tileSprites[spriteIdx].Position = new Vector2f(xPos, yPos);
-                    window.Draw(_tileSprites[spriteIdx]);
-                }
-            }
         }
 
         public void Dispose()
