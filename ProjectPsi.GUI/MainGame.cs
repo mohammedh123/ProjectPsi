@@ -13,8 +13,8 @@ namespace ProjectPsi.GUI
     public class MainGame : IDisposable
     {
         private Map _map;
-        private TextureManager _textureManager;
-        private ScreenManager _screenManager;
+        private ITextureManager<Texture> _textureManager;
+        private IScreenManager _screenManager;
         private IMouseManager<Mouse.Button, Vector2i, Window> _mouseManager; 
         private IKeyStateManager<Keyboard.Key> _kbManager;
         private IInputManager<Mouse.Button, Vector2i, Window, Keyboard.Key> _inputManager;
