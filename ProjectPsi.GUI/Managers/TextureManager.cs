@@ -25,9 +25,13 @@ namespace ProjectPsi.GUI.Managers
         /// <exception cref="LoadingFailedException"></exception>
         public Texture LoadTexture(string key, string filename, bool smooth = true, bool repeated = false)
         {
-            var tex = new Texture(filename) {Smooth = smooth, Repeated = repeated};
+            var tex = GetTexture(key);
 
-            _textureDictionary.Add(key, tex);
+            if (tex == null) {
+                tex = new Texture(filename) {Smooth = smooth, Repeated = repeated};
+
+                _textureDictionary.Add(key, tex);
+            }
 
             return tex;
         }
