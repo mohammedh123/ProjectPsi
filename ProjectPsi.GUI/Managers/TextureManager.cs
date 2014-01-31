@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using ProjectPsi.GUI.Interfaces;
 using SFML;
 using SFML.Graphics;
 
 namespace ProjectPsi.GUI.Managers
 {
-    class TextureManager
+    class TextureManager : ITextureManager<Texture>
     {
         private readonly Dictionary<string, Texture> _textureDictionary;
 

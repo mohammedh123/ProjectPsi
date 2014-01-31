@@ -62,6 +62,7 @@
     <Compile Include="Interfaces\IKeyStateManager.cs" />
     <Compile Include="Interfaces\IMouseManager.cs" />
     <Compile Include="Interfaces\IScreenManager.cs" />
+    <Compile Include="Interfaces\ITextureManager.cs" />
     <Compile Include="MainGame.cs" />
     <Compile Include="Managers\InputManager.cs" />
     <Compile Include="Managers\KeyboardManager.cs" />
