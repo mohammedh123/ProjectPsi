@@ -197,6 +197,7 @@ namespace ProjectPsi.GUI.Managers
         /// </summary>
         public void AddScreen(GameScreen screen)
         {
+            screen.Game = _game;
             screen.ScreenManager = this;
             screen.IsExiting = false;
 

@@ -110,6 +110,11 @@ namespace ProjectPsi.GUI.Screens
         /// </summary>
         public ScreenManager ScreenManager { get; internal set; }
 
+        /// <summary>
+        /// Gets the game that this screen deals with.
+        /// </summary>
+        public MainGame Game { get; set; }
+
         protected GameScreen()
         {
             IsExiting = false;
