@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ProjectPsi.Core;
+using ProjectPsi.GUI.Interfaces;
 using SFML.Graphics;
 using SFML.Window;
 
@@ -36,6 +37,31 @@ namespace ProjectPsi.GUI.Screens
             }
 
             _mapView = Game.Window.GetView();
+        }
+
+        public override void HandleInput(IInputManager<Mouse.Button, Vector2i, Window, Keyboard.Key> input, TimeSpan gameTime)
+        {
+            base.HandleInput(input, gameTime);
+
+            var offset = new Vector2f();
+
+            if (input.Keyboard.IsKeyDown(Keyboard.Key.Left)) {
+                offset = new Vector2f(offset.X - GameConstants.PanningSpeed, offset.Y);
+            }
+            if (input.Keyboard.IsKeyDown(Keyboard.Key.Up)) {
+                offset = new Vector2f(offset.X, offset.Y - GameConstants.PanningSpeed);
+            }
+            if (input.Keyboard.IsKeyDown(Keyboard.Key.Right)) {
+                offset = new Vector2f(offset.X + GameConstants.PanningSpeed, offset.Y);
+            }
+            if (input.Keyboard.IsKeyDown(Keyboard.Key.Down)) {
+                offset = new Vector2f(offset.X, offset.Y + GameConstants.PanningSpeed);
+            }
+
+            if (offset.X != 0 || offset.Y != 0) {
+                _mapView.Move(offset*(float) gameTime.TotalSeconds);
+                Game.Window.SetView(_mapView);
+            }
         }
 
         public override void Update(TimeSpan gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
