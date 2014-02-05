@@ -11,10 +11,11 @@
         bool IsKeyPressed(TKeyType key);
 
         /// <summary>
-        /// Called when the key is pressed, so that it can updated in the KeyStateManager.
+        /// Called when the key is pressed/released, so that it can updated in the KeyStateManager.
         /// </summary>
-        /// <param name="key">The key pressed.</param>
-        void UpdateKey(TKeyType key);
+        /// <param name="key">The key pressed/released.</param>
+        /// <param name="pressed">If the key was pressed or not</param>
+        void UpdateKey(TKeyType key, bool pressed);
 
         /// <summary>
         /// Called after all input is processed.

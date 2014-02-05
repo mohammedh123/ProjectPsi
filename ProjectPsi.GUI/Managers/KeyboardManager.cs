@@ -28,10 +28,10 @@ namespace ProjectPsi.GUI.Managers
             return key >= 0 && !_previousKeyState[(int) key] && _currentKeyState[(int) key];
         }
 
-        public void UpdateKey(Keyboard.Key key)
+        public void UpdateKey(Keyboard.Key key, bool pressed)
         {
             if (key >= 0) {
-                _currentKeyState[(int) key] = true;
+                _currentKeyState[(int) key] = pressed;
             }
         }
 

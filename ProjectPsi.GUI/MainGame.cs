@@ -39,7 +39,9 @@ namespace ProjectPsi.GUI
             Window.LostFocus += OnLostFocus;
             Window.Closed += OnClosed;
             Window.KeyPressed += OnKeyPressed;
+            Window.KeyReleased += OnKeyReleased;
             Window.MouseButtonPressed += OnMouseButtonPressed;
+            Window.MouseButtonReleased += OnMouseButtonReleased;
                 
             Window.SetActive(IsActive);
             
@@ -60,6 +62,7 @@ namespace ProjectPsi.GUI
             // run the program as long as the window is open
             while (Window.IsOpen()) {
                 LastFrameTime = clock.Elapsed;
+                clock.Restart();
 
                 Window.DispatchEvents();
 
@@ -68,7 +71,7 @@ namespace ProjectPsi.GUI
                 RenderFrame(Window);
             }
         }
-
+        
         #region Event Handlers (simple) 
 
         private void OnGainedFocus(object sender, EventArgs eventArgs)
@@ -88,12 +91,20 @@ namespace ProjectPsi.GUI
 
         private void OnKeyPressed(object sender, KeyEventArgs e)
         {
-            KeyboardManager.UpdateKey(e.Code);
+            KeyboardManager.UpdateKey(e.Code, true);
+        }
+        private void OnKeyReleased(object sender, KeyEventArgs e)
+        {
+            KeyboardManager.UpdateKey(e.Code, false);
         }
 
         private void OnMouseButtonPressed(object sender, MouseButtonEventArgs e)
         {
-            MouseManager.UpdateKey(e.Button);
+            MouseManager.UpdateKey(e.Button, true);
+        }
+        private void OnMouseButtonReleased(object sender, MouseButtonEventArgs e)
+        {
+            MouseManager.UpdateKey(e.Button, false);
         }
 
         #endregion
