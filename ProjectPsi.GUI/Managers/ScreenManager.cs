@@ -142,7 +142,7 @@ namespace ProjectPsi.GUI.Managers
                     // give it a chance to handle input.
                     if (!otherScreenHasFocus)
                     {
-                        screen.HandleInput(_input);
+                        screen.HandleInput(_input, gameTime);
 
                         otherScreenHasFocus = true;
                     }

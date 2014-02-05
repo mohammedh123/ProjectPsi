@@ -217,7 +217,7 @@ namespace ProjectPsi.GUI.Screens
         /// is only called when the screen is active, and not when some other
         /// screen has taken the focus.
         /// </summary>
-        public virtual void HandleInput(IInputManager<Mouse.Button, Vector2i, Window, Keyboard.Key> input) { }
+        public virtual void HandleInput(IInputManager<Mouse.Button, Vector2i, Window, Keyboard.Key> input, TimeSpan gameTime) { }
 
 
         /// <summary>
