@@ -50,7 +50,7 @@ namespace ProjectPsi.GUI.Screens
             DrawMap(Game.Window);
         }
 
-        private void DrawMap(RenderWindow window)
+        private void DrawMap(RenderTarget window)
         {
             var tileWidth = _map.TileRadius * 2;
             var tileHeight = (float)(tileWidth * Math.Sin(Math.PI / 3));
