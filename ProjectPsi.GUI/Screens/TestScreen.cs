@@ -38,7 +38,7 @@ namespace ProjectPsi.GUI.Screens
                 }
             }
 
-            _mapView = Game.Window.GetView();
+            _mapView = new View(Game.Window.DefaultView);
         }
 
         public override void HandleInput(IInputManager<Mouse.Button, Vector2i, Window, Keyboard.Key> input, TimeSpan gameTime)
