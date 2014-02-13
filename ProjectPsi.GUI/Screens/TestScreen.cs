@@ -10,14 +10,15 @@ using SFML.Window;
 
 namespace ProjectPsi.GUI.Screens
 {
-    class TestScreen : GameScreen
+    internal class TestScreen : GameScreen
     {
         private Map _map;
         private List<Sprite> _tileSprites;
         private View _mapView;
-        
+        private Text _debugText;
         public override void LoadContent()
         {
+            _debugText = new Text("test", new Font(@"Resources/Fonts/arial.ttf"), 24);
             Game.TextureManager.LoadTexture("tilemap", @"Resources/Textures/tilemap.png");
 
             var tileSprite = new Sprite(Game.TextureManager.GetTexture("tilemap"), new IntRect(0, 0, 64, 64));
@@ -78,7 +79,17 @@ namespace ProjectPsi.GUI.Screens
         {
             Game.Window.Clear();
 
+            Game.Window.SetView(_mapView);
             DrawMap(Game.Window);
+
+            var center = _mapView.Center;
+            var viewport = _mapView.Size;
+            var viewportCenter = viewport/2;
+
+            _debugText.DisplayedString = String.Format("{0}, {1}", center.X - viewportCenter.X, center.X + viewportCenter.X);
+            Game.Window.SetView(Game.Window.DefaultView);
+            _debugText.Color = Color.Red;
+            Game.Window.Draw(_debugText);
         }
 
         private void DrawMap(RenderTarget window)
