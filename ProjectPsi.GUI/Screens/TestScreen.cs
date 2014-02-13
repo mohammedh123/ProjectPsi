@@ -26,11 +26,13 @@ namespace ProjectPsi.GUI.Screens
             _tileSprites = new List<Sprite>();
             _tileSprites.Add(tileSprite);
 
-            _map = new Map(18, 15, 31);
+            _map = new Map(5, 5, new HexagonalTileInfo(31));
 
             for (int r = 0; r < _map.Height; r++) {
                 for (int c = 0; c < _map.Width; c++) {
-                    if (r == 0 || c == 0 || r == _map.Height - 1 || c == _map.Width - 1) {
+                    if (r == 0 || c == 0 || r >= _map.Height - 2 || c == _map.Width - 1) {
+                        if (r == _map.Height - 1 && c%2 == 0) continue;
+                        if (r == _map.Height - 2 && c%2 != 0) continue;
                         _map.SetTile(c, r, 0);
                     }
                 }

@@ -8,13 +8,14 @@
 
         public int[,] Tiles { get; set; }
 
-        public float TileRadius { get; set; }
+        public ITileInfo TileInfo { get; set; }
 
-        public Map(int width, int height, float tileRadius)
+
+        public Map(int width, int height, ITileInfo tileInfo)
         {
             Width = width;
             Height = height;
-            TileRadius = tileRadius;
+            TileInfo = tileInfo;
 
             Tiles = new int[height, width];
 
