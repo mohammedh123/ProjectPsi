@@ -94,28 +94,17 @@ namespace ProjectPsi.GUI.Screens
 
         private void DrawMap(RenderTarget window)
         {
-            var tileWidth = _map.TileRadius * 2;
-            var tileHeight = (float)(tileWidth * Math.Sin(Math.PI / 3));
-
-            for (var row = 0; row < _map.Height; row++)
-            {
-                for (var col = 0; col < _map.Width; col++)
-                {
+            for (var row = 0; row < _map.Height; row++) {
+                for (var col = 0; col < _map.Width; col++) {
                     //even-q vertical layout
 
                     var spriteIdx = _map.Tiles[row, col];
-                    if (spriteIdx < 0)
-                    {
+                    if (spriteIdx < 0) {
                         continue;
                     }
 
-                    var xPos = col * tileWidth * 0.75f;
-                    var yPos = row * tileHeight;
-
-                    if (col % 2 != 0)
-                    {
-                        yPos -= tileHeight * 0.5f;
-                    }
+                    float xPos = _map.TileInfo.GetTilePositionX(col, row),
+                        yPos = _map.TileInfo.GetTilePositionY(col, row);
 
                     _tileSprites[spriteIdx].Position = new Vector2f(xPos, yPos);
                     window.Draw(_tileSprites[spriteIdx]);
