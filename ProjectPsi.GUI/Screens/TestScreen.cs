@@ -16,6 +16,27 @@ namespace ProjectPsi.GUI.Screens
         private List<Sprite> _tileSprites;
         private View _mapView;
         private Text _debugText;
+
+        private float ViewportLeftEdge
+        {
+            get { return _mapView.Center.X - _mapView.Size.X/2; }
+        }
+
+        private float ViewportTopEdge
+        {
+            get { return _mapView.Center.Y - _mapView.Size.Y/2; }
+        }
+
+        private float ViewportRightEdge
+        {
+            get { return _mapView.Center.X + _mapView.Size.X/2; }
+        }
+
+        private float ViewportBottomEdge
+        {
+            get { return _mapView.Center.Y + _mapView.Size.Y/2; }
+        }
+
         public override void LoadContent()
         {
             _debugText = new Text("test", new Font(@"Resources/Fonts/arial.ttf"), 24);
@@ -38,6 +59,7 @@ namespace ProjectPsi.GUI.Screens
                     }
                 }
             }
+            _map.RecalculateEdges();
 
             _mapView = new View(Game.Window.DefaultView);
 
@@ -49,6 +71,11 @@ namespace ProjectPsi.GUI.Screens
         {
             base.HandleInput(input, gameTime);
 
+            HandleCameraInput(input, gameTime);
+        }
+
+        private void HandleCameraInput(IInputManager<Mouse.Button, Vector2i, Window, Keyboard.Key> input, TimeSpan gameTime)
+        {
             var offset = new Vector2f();
 
             if (input.Keyboard.IsKeyDown(Keyboard.Key.Left)) {
@@ -65,8 +92,49 @@ namespace ProjectPsi.GUI.Screens
             }
 
             if (offset.X != 0 || offset.Y != 0) {
-                _mapView.Move(offset*(float) gameTime.TotalSeconds);
-                Game.Window.SetView(_mapView);
+                var viewport = _mapView.Size;
+                var viewportCenter = viewport/2;
+
+                //update the center
+                _mapView.Center += offset*(float) gameTime.TotalSeconds;
+
+                // if the total mapWidth is less than the size of the viewport (X-axis), then allow to scroll freely within viewport for that axis
+                // otherwise, scroll to edge
+                if (_map.WidthInPixels < viewport.X) {
+                    if (ViewportLeftEdge > _map.LeftEdgeInPixels) {
+                        _mapView.Center = new Vector2f(_map.LeftEdgeInPixels + viewportCenter.X, _mapView.Center.Y);
+                    }
+                    if (ViewportRightEdge < _map.RightEdgeInPixels) {
+                        _mapView.Center = new Vector2f(_map.RightEdgeInPixels - viewportCenter.X, _mapView.Center.Y);
+                    }
+                }
+                else {
+                    if (ViewportLeftEdge < _map.LeftEdgeInPixels) {
+                        _mapView.Center = new Vector2f(_map.LeftEdgeInPixels + viewportCenter.X, _mapView.Center.Y);
+                    }
+                    if (ViewportRightEdge > _map.RightEdgeInPixels) {
+                        _mapView.Center = new Vector2f(_map.RightEdgeInPixels - viewportCenter.X, _mapView.Center.Y);
+                    }
+                }
+
+                // if the total mapHeight is less than the size of the viewport (Y-axis), then allow to scroll freely within viewport for that axis
+                // otherwise, scroll to edge
+                if (_map.HeightInPixels < viewport.Y) {
+                    if (ViewportTopEdge > _map.TopEdgeInPixels) {
+                        _mapView.Center = new Vector2f(_mapView.Center.X, _map.TopEdgeInPixels + viewportCenter.Y);
+                    }
+                    if (ViewportBottomEdge < _map.BottomEdgeInPixels) {
+                        _mapView.Center = new Vector2f(_mapView.Center.X, _map.BottomEdgeInPixels - viewportCenter.Y);
+                    }
+                }
+                else {
+                    if (ViewportTopEdge < _map.TopEdgeInPixels) {
+                        _mapView.Center = new Vector2f(_mapView.Center.X, _map.TopEdgeInPixels + viewportCenter.Y);
+                    }
+                    if (ViewportBottomEdge > _map.BottomEdgeInPixels) {
+                        _mapView.Center = new Vector2f(_mapView.Center.X, _map.BottomEdgeInPixels - viewportCenter.Y);
+                    }
+                }
             }
         }
 
