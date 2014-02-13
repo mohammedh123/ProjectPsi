@@ -39,6 +39,9 @@ namespace ProjectPsi.GUI.Screens
             }
 
             _mapView = new View(Game.Window.DefaultView);
+
+            //center view on map initially
+            _mapView.Center = new Vector2f(_map.WidthInPixels/2, _map.HeightInPixels/2);
         }
 
         public override void HandleInput(IInputManager<Mouse.Button, Vector2i, Window, Keyboard.Key> input, TimeSpan gameTime)
