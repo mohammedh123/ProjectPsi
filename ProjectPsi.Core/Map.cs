@@ -12,6 +12,8 @@ namespace ProjectPsi.Core
 
         public ITileInfo TileInfo { get; private set; }
 
+        #region Edge Properties
+
         public int LeftEdge { get; private set; }
         public int TopEdge { get; private set; }
         public int RightEdge { get; private set; }
@@ -46,6 +48,8 @@ namespace ProjectPsi.Core
         {
             get { return TileInfo.GetTilePositionY(0, Height - 1) + TileInfo.Height/2; }
         }
+
+        #endregion
 
         public Map(int width, int height, ITileInfo tileInfo)
         {
