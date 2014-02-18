@@ -4,18 +4,18 @@ namespace ProjectPsi.Core
 {
     public class Map
     {
-        public int Width { get; set; }
+        public int Width { get; private set; }
 
-        public int Height { get; set; }
+        public int Height { get; private set; }
 
-        public int[,] Tiles { get; set; }
+        public int[,] Tiles { get; private set; }
 
-        public ITileInfo TileInfo { get; set; }
+        public ITileInfo TileInfo { get; private set; }
 
-        public int LeftEdge { get; set; }
-        public int TopEdge { get; set; }
-        public int RightEdge { get; set; }
-        public int BottomEdge { get; set; }
+        public int LeftEdge { get; private set; }
+        public int TopEdge { get; private set; }
+        public int RightEdge { get; private set; }
+        public int BottomEdge { get; private set; }
 
         public float LeftEdgeInPixels
         {
