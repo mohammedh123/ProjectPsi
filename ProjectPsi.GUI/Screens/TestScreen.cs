@@ -56,9 +56,7 @@ namespace ProjectPsi.GUI.Screens
 
             for (int r = 0; r < _map.Height; r++) {
                 for (int c = 0; c < _map.Width; c++) {
-                    if (r == 0 || c == 0 || r >= _map.Height - 2 || c == _map.Width - 1) {
-                        if (r == _map.Height - 1 && c%2 == 0) continue;
-                        if (r == _map.Height - 2 && c%2 != 0) continue;
+                    if (r == 0 || c == 0 || r >= _map.Height - 1 || c == _map.Width - 1) {
                         _map.SetTile(c, r, 0);
                     }
                 }
