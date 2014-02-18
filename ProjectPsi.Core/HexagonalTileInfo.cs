@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ProjectPsi.Core
 {
     /// <summary>
-    /// An implementation of ITileInfo for a map using hexagonal tiles (even-q layout).
+    /// An implementation of ITileInfo for a map using hexagonal tiles (even-r layout).
     /// </summary>
     public struct HexagonalTileInfo : ITileInfo
     {
@@ -17,28 +17,29 @@ namespace ProjectPsi.Core
 
         public float Width
         {
-            get { return Radius*2; }
+            get { return Height * SinPiOver3; }
         }
 
         public float Height
         {
-            get { return Width*SinPiOver3; }
+            get { return Radius * 2; }
         }
 
         public float GetTilePositionX(int x, int y)
         {
-            return x * Width * 0.75f;
+            var xPos = x * Width;
+
+            if (y % 2 != 0)
+            {
+                xPos -= Width * 0.5f;
+            }
+
+            return xPos;
         }
 
         public float GetTilePositionY(int x, int y)
         {
-            var yPos = y*Height;
-
-            if (x%2 != 0) {
-                yPos -= Height*0.5f;
-            }
-
-            return yPos;
+            return y * Height * 0.75f;
         }
 
         public HexagonalTileInfo(float radius) : this()

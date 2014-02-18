@@ -14,6 +14,7 @@ namespace ProjectPsi.GUI.Screens
     {
         private Map _map;
         private List<Sprite> _tileSprites;
+        private Sprite _emptyTileSprite;
         private View _mapView;
         private Text _debugText;
 
@@ -42,13 +43,16 @@ namespace ProjectPsi.GUI.Screens
             _debugText = new Text("test", new Font(@"Resources/Fonts/arial.ttf"), 24);
             Game.TextureManager.LoadTexture("tilemap", @"Resources/Textures/tilemap.png");
 
-            var tileSprite = new Sprite(Game.TextureManager.GetTexture("tilemap"), new IntRect(0, 0, 64, 64));
+            var tileSprite = new Sprite(Game.TextureManager.GetTexture("tilemap"), new IntRect(64, 0, 64, 64));
             tileSprite.Origin = new Vector2f(32, 32);
 
             _tileSprites = new List<Sprite>();
             _tileSprites.Add(tileSprite);
 
-            _map = new Map(5, 5, new HexagonalTileInfo(31));
+            _emptyTileSprite = new Sprite(Game.TextureManager.GetTexture("tilemap"), new IntRect(0, 0, 64, 64));
+            _emptyTileSprite.Origin = new Vector2f(32, 32);
+
+            _map = new Map(9, 9, new HexagonalTileInfo(31));
 
             for (int r = 0; r < _map.Height; r++) {
                 for (int c = 0; c < _map.Width; c++) {
@@ -167,15 +171,14 @@ namespace ProjectPsi.GUI.Screens
                     //even-q vertical layout
 
                     var spriteIdx = _map.Tiles[row, col];
-                    if (spriteIdx < 0) {
-                        continue;
-                    }
+
+                    var spriteToUse = spriteIdx < 0 ? _emptyTileSprite : _tileSprites[spriteIdx];
 
                     float xPos = _map.TileInfo.GetTilePositionX(col, row),
                         yPos = _map.TileInfo.GetTilePositionY(col, row);
 
-                    _tileSprites[spriteIdx].Position = new Vector2f(xPos, yPos);
-                    window.Draw(_tileSprites[spriteIdx]);
+                    spriteToUse.Position = new Vector2f(xPos, yPos);
+                    window.Draw(spriteToUse);
                 }
             }
         }
