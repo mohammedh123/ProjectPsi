@@ -113,5 +113,88 @@ namespace ProjectPsi.Tests.Core
                 Assert.AreEqual(-1, DummyMap.BottomEdge);
             }
         }
+
+        [TestClass]
+        public class AddSpawnPoint : TMap
+        {
+            [TestInitialize]
+            public void Setup()
+            {
+                DummyMap = new Map(5, 5, new HexagonalTileInfo(10));
+            }
+
+            [TestMethod]
+            public void ShouldProperlyAddNewSpawnPointSingle()
+            {
+                DummyMap.AddSpawnPoint(0, 0);
+
+                Assert.IsTrue(DummyMap.SpawnPoints.Contains(new Vector<int>(0, 0)));
+            }
+
+            [TestMethod]
+            public void ShouldProperlyAddNewSpawnPointMultiple()
+            {
+                DummyMap.AddSpawnPoint(0, 0);
+                DummyMap.AddSpawnPoint(0, 0);
+                DummyMap.AddSpawnPoint(0, 0);
+                DummyMap.AddSpawnPoint(0, 0);
+                DummyMap.AddSpawnPoint(0, 0);
+                DummyMap.AddSpawnPoint(0, 0);
+                DummyMap.AddSpawnPoint(0, 0);
+
+                Assert.IsTrue(DummyMap.SpawnPoints.Contains(new Vector<int>(0, 0)));
+                Assert.IsTrue(DummyMap.SpawnPoints.Count == 1);
+            }
+
+            [TestMethod]
+            public void ShouldFailForOutOfBoundsSpawnPoint()
+            {
+                var retVal = DummyMap.AddSpawnPoint(999, 999);
+
+                Assert.IsFalse(retVal);
+                Assert.AreEqual(0, DummyMap.SpawnPoints.Count);
+            }
+        }
+
+        [TestClass]
+        public class RemoveSpawnPoint : TMap
+        {
+            [TestInitialize]
+            public void Setup()
+            {
+                DummyMap = new Map(5, 5, new HexagonalTileInfo(10));
+                DummyMap.AddSpawnPoint(0, 0);
+            }
+
+            [TestMethod]
+            public void ShouldProperlyRemoveSpawnPointSingle()
+            {
+                DummyMap.RemoveSpawnPoint(0,0);
+
+                Assert.AreEqual(0, DummyMap.SpawnPoints.Count);
+            }
+
+            [TestMethod]
+            public void ShouldProperlyRemoveSpawnPointMultiple()
+            {
+                DummyMap.RemoveSpawnPoint(0, 0);
+                DummyMap.RemoveSpawnPoint(0, 0);
+                DummyMap.RemoveSpawnPoint(0, 0);
+                DummyMap.RemoveSpawnPoint(0, 0);
+                DummyMap.RemoveSpawnPoint(0, 0);
+                DummyMap.RemoveSpawnPoint(0, 0);
+
+                Assert.AreEqual(0, DummyMap.SpawnPoints.Count);
+            }
+
+            [TestMethod]
+            public void ShouldNotRemoveSpawnPointThatDoesNotExist()
+            {
+                DummyMap.RemoveSpawnPoint(5, 5);
+                DummyMap.RemoveSpawnPoint(555, 555);
+
+                Assert.AreEqual(1, DummyMap.SpawnPoints.Count);
+            }
+        }
     }
 }

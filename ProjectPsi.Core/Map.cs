@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace ProjectPsi.Core
 {
@@ -9,6 +11,11 @@ namespace ProjectPsi.Core
         public int Height { get; private set; }
 
         public int[,] Tiles { get; private set; }
+
+        /// <summary>
+        /// A list of unique spawn points in the map.
+        /// </summary>
+        public HashSet<Vector<int>> SpawnPoints { get; private set; }  
 
         public ITileInfo TileInfo { get; private set; }
 
@@ -69,11 +76,37 @@ namespace ProjectPsi.Core
             TopEdge = -1;
             RightEdge = -1;
             BottomEdge = -1;
+
+            SpawnPoints = new HashSet<Vector<int>>();
         }
 
         public void SetTile(int x, int y, int spriteIndex)
         {
             Tiles[y, x] = spriteIndex;
+        }
+
+        /// <summary>
+        /// Attempts to add a spawn point to the map. If the tile at the input coordinates is not empty, no spawn point will be added.
+        /// </summary>
+        /// <returns><b>true</b> if the spawn point is now in the list, <b>false</b> otherwise.</returns>
+        public bool AddSpawnPoint(int x, int y)
+        {
+            if (x < Width && y < Height) {
+                SpawnPoints.Add(new Vector<int>(x, y));
+            }
+            else {
+                return false;
+            }
+
+            return true; //todo: the rest of the logic required
+        }
+
+        /// <summary>
+        /// Removes any spawn point that is located at the input coordinates. Does nothing if no spawn point exists there.
+        /// </summary>
+        public void RemoveSpawnPoint(int x, int y)
+        {
+            SpawnPoints.Remove(new Vector<int>(x, y));
         }
 
         /// <summary>
