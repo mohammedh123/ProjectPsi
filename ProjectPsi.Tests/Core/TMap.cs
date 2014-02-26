@@ -196,5 +196,88 @@ namespace ProjectPsi.Tests.Core
                 Assert.AreEqual(1, DummyMap.SpawnPoints.Count);
             }
         }
+
+        [TestClass]
+        public class AddEndPoint : TMap
+        {
+            [TestInitialize]
+            public void Setup()
+            {
+                DummyMap = new Map(5, 5, new HexagonalTileInfo(10));
+            }
+
+            [TestMethod]
+            public void ShouldProperlyAddNewEndPointSingle()
+            {
+                DummyMap.AddEndPoint(0, 0);
+
+                Assert.IsTrue(DummyMap.EndPoints.Contains(new Vector<int>(0, 0)));
+            }
+
+            [TestMethod]
+            public void ShouldProperlyAddNewEndPointMultiple()
+            {
+                DummyMap.AddEndPoint(0, 0);
+                DummyMap.AddEndPoint(0, 0);
+                DummyMap.AddEndPoint(0, 0);
+                DummyMap.AddEndPoint(0, 0);
+                DummyMap.AddEndPoint(0, 0);
+                DummyMap.AddEndPoint(0, 0);
+                DummyMap.AddEndPoint(0, 0);
+
+                Assert.IsTrue(DummyMap.EndPoints.Contains(new Vector<int>(0, 0)));
+                Assert.IsTrue(DummyMap.EndPoints.Count == 1);
+            }
+
+            [TestMethod]
+            public void ShouldFailForOutOfBoundsEndPoint()
+            {
+                var retVal = DummyMap.AddEndPoint(999, 999);
+
+                Assert.IsFalse(retVal);
+                Assert.AreEqual(0, DummyMap.EndPoints.Count);
+            }
+        }
+
+        [TestClass]
+        public class RemoveEndPoint : TMap
+        {
+            [TestInitialize]
+            public void Setup()
+            {
+                DummyMap = new Map(5, 5, new HexagonalTileInfo(10));
+                DummyMap.AddEndPoint(0, 0);
+            }
+
+            [TestMethod]
+            public void ShouldProperlyRemoveEndPointSingle()
+            {
+                DummyMap.RemoveEndPoint(0, 0);
+
+                Assert.AreEqual(0, DummyMap.EndPoints.Count);
+            }
+
+            [TestMethod]
+            public void ShouldProperlyRemoveEndPointMultiple()
+            {
+                DummyMap.RemoveEndPoint(0, 0);
+                DummyMap.RemoveEndPoint(0, 0);
+                DummyMap.RemoveEndPoint(0, 0);
+                DummyMap.RemoveEndPoint(0, 0);
+                DummyMap.RemoveEndPoint(0, 0);
+                DummyMap.RemoveEndPoint(0, 0);
+
+                Assert.AreEqual(0, DummyMap.EndPoints.Count);
+            }
+
+            [TestMethod]
+            public void ShouldNotRemoveEndPointThatDoesNotExist()
+            {
+                DummyMap.RemoveEndPoint(5, 5);
+                DummyMap.RemoveEndPoint(555, 555);
+
+                Assert.AreEqual(1, DummyMap.EndPoints.Count);
+            }
+        }
     }
 }

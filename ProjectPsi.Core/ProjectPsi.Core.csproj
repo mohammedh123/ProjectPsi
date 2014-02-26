@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enemy.cs" />
     <Compile Include="HexagonalTileInfo.cs" />
     <Compile Include="ITileInfo.cs" />
     <Compile Include="Map.cs" />

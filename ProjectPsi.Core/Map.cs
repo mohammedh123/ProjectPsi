@@ -15,7 +15,12 @@ namespace ProjectPsi.Core
         /// <summary>
         /// A list of unique spawn points in the map.
         /// </summary>
-        public HashSet<Vector<int>> SpawnPoints { get; private set; }  
+        public HashSet<Vector<int>> SpawnPoints { get; private set; }
+
+        /// <summary>
+        /// A list of unique end points in the map.
+        /// </summary>
+        public HashSet<Vector<int>> EndPoints { get; private set; } 
 
         public ITileInfo TileInfo { get; private set; }
 
@@ -78,6 +83,7 @@ namespace ProjectPsi.Core
             BottomEdge = -1;
 
             SpawnPoints = new HashSet<Vector<int>>();
+            EndPoints = new HashSet<Vector<int>>();
         }
 
         public void SetTile(int x, int y, int spriteIndex)
@@ -91,10 +97,12 @@ namespace ProjectPsi.Core
         /// <returns><b>true</b> if the spawn point is now in the list, <b>false</b> otherwise.</returns>
         public bool AddSpawnPoint(int x, int y)
         {
-            if (x < Width && y < Height) {
+            if (x < Width && y < Height)
+            {
                 SpawnPoints.Add(new Vector<int>(x, y));
             }
-            else {
+            else
+            {
                 return false;
             }
 
@@ -107,6 +115,32 @@ namespace ProjectPsi.Core
         public void RemoveSpawnPoint(int x, int y)
         {
             SpawnPoints.Remove(new Vector<int>(x, y));
+        }
+
+        /// <summary>
+        /// Attempts to add an end point to the map. If the tile at the input coordinates is not empty, no end point will be added.
+        /// </summary>
+        /// <returns><b>true</b> if the end point is now in the list, <b>false</b> otherwise.</returns>
+        public bool AddEndPoint(int x, int y)
+        {
+            if (x < Width && y < Height)
+            {
+                EndPoints.Add(new Vector<int>(x, y));
+            }
+            else
+            {
+                return false;
+            }
+
+            return true; //todo: the rest of the logic required
+        }
+
+        /// <summary>
+        /// Removes any end point that is located at the input coordinates. Does nothing if no end point exists there.
+        /// </summary>
+        public void RemoveEndPoint(int x, int y)
+        {
+            EndPoints.Remove(new Vector<int>(x, y));
         }
 
         /// <summary>
